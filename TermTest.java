@@ -1,3 +1,9 @@
+/*
+ * TermTest.java
+ *
+ * Unit tests of the Term.java library.
+ */
+
 import java.util.function.Function;
 
 public class TermTest {
