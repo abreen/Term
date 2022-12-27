@@ -67,6 +67,22 @@ public class Term {
         return CSI + getUnsetCode(m) + "m";
     }
 
+    public static String setModes(Mode... modes) {
+        return mapAndBuildEscapeSequence(Mode::getCode, modes);
+    }
+
+    public static String unsetModes(Mode... modes) {
+        return mapAndBuildEscapeSequence(Term::getUnsetCode, modes);
+    }
+
+    private static String mapAndBuildEscapeSequence(Function<Mode, Integer> func, Mode... modes) {
+        return graphicsModeEscape(Arrays.stream(modes).map(func));
+    }
+
+    private static String graphicsModeEscape(Stream<Integer> codes) {
+        return CSI + codes.map(String::valueOf).collect(Collectors.joining(";")) + "m";
+    }
+
     private static int getUnsetCode(Mode m) {
         if (m instanceof Background) {
             return Background.DEFAULT.getCode();
@@ -78,26 +94,6 @@ public class Term {
             return 22;
         }
         return 20 + m.getCode();
-    }
-
-    public static String setModes(Mode... modes) {
-        return buildEscapeSequence(Mode::getCode, modes);
-
-    }
-
-    public static String unsetModes(Mode... modes) {
-        return buildEscapeSequence(Term::getUnsetCode, modes);
-    }
-
-    public static String buildEscapeSequence(Function<Mode, Integer> f, Mode... modes) {
-        return graphicsModeEscape(
-            Arrays.stream(modes).map(f).collect(Collectors.toList())
-        );
-    }
-
-    private static String graphicsModeEscape(List<Integer> codes) {
-        return CSI + codes.stream().map(Objects::toString)
-                          .collect(Collectors.joining(";")) + "m";
     }
 
     public static String reset() { return CSI + 0 + "m"; }
