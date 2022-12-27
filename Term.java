@@ -4,11 +4,9 @@
  * A simple utility class for ANSI terminals.
  */
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 public class Term {
     public static void main(String[] args) {
