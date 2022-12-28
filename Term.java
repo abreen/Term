@@ -20,9 +20,9 @@ public class Term {
         for (Color c : colors) {
             for (Background b : backgrounds) {
                 System.out.print(
-                    Term.setModes(b, c) +
-                    String.format(" %x/%x ", c.getCode(), b.getCode()) +
-                    Term.unsetModes(b, c)
+                    Term.compose(b, c).apply(
+                        String.format(" %x/%x ", c.getCode(), b.getCode())
+                    )
                 );
 
                 if (++i % 8 == 0) {
@@ -36,9 +36,9 @@ public class Term {
         int i = 0;
         for (Mode m : Mode.NON_COLOR_MODES) {
             System.out.print(
-                Term.setMode(m) +
-                String.format(" mode%d ", m.getCode()) +
-                Term.unsetMode(m)
+                Term.compose(m).apply(
+                    String.format(" mode%d ", m.getCode())
+                )
             );
 
             if (++i % 8 == 0) {
@@ -47,40 +47,22 @@ public class Term {
         }
     }
 
-    public static final String BEL = "\u0007";
-    public static final String BS = "\u0008";
-    public static final String HT = "\u0009";
-    public static final String LF = "\r";
-    public static final String VT = "\u000b";
-    public static final String FF = "\u000c";
-    public static final String CR = "\n";
-    public static final String ESC = "\u001b";
-    public static final String DEL = "\u007f";
+    private static final String ESC = "\u001b";
+    private static final String CSI = ESC + "[";
 
-    public static final String CSI = ESC + "[";
-
-    public static String setMode(Mode m) {
-        return CSI + m.getCode() + "m";
-    }
-
-    public static String unsetMode(Mode m) {
-        return CSI + getUnsetCode(m) + "m";
-    }
+    public static String setMode(Mode m) { return esc(Stream.of(m.getCode())); }
+    public static String unsetMode(Mode m) { return esc(Stream.of(getUnsetCode(m))); }
 
     public static String setModes(Mode... modes) {
-        return mapAndBuildEscapeSequence(Mode::getCode, modes);
+        return esc(Arrays.stream(modes).map(Mode::getCode));
     }
 
     public static String unsetModes(Mode... modes) {
-        return mapAndBuildEscapeSequence(Term::getUnsetCode, modes);
+        return esc(Arrays.stream(modes).map(Term::getUnsetCode));
     }
 
-    private static String mapAndBuildEscapeSequence(Function<Mode, Integer> func, Mode... modes) {
-        return graphicsModeEscape(Arrays.stream(modes).map(func));
-    }
-
-    private static String graphicsModeEscape(Stream<Integer> codes) {
-        return CSI + codes.map(String::valueOf).collect(Collectors.joining(";")) + "m";
+    private static String esc(Stream<Integer> codes) {
+        return String.format("\u001b[%sm", codes.map(Objects::toString).collect(Collectors.joining(";")));
     }
 
     private static int getUnsetCode(Mode m) {
@@ -145,6 +127,8 @@ public class Term {
     public static String bgBrCyan(String s) { return enclose(s, Background.CYAN_BRIGHT); }
     public static String bgBrWhite(String s) { return enclose(s, Background.WHITE_BRIGHT); }
 
+    private static String enclose(String s, Mode m) { return setMode(m) + s + unsetMode(m); }
+
     public static String cursorHome() { return CSI + "H"; }
     public static String cursorTo(int line, int column) { return CSI + line + ";" + column + "H"; }
     public static String cursorUp(int numLines) { return CSI + numLines + "A"; }
@@ -167,10 +151,6 @@ public class Term {
 
     public static String saveScreen() { return CSI + "?47h"; }
     public static String restoreScreen() { return CSI + "?47l"; }
-
-    private static String enclose(String s, Mode m) {
-        return setMode(m) + s + unsetMode(m);
-    }
 
     public static Function<String, String> compose(Mode... modes) {
         return str -> setModes(modes) + str + unsetModes(modes);
