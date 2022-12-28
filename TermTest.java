@@ -219,4 +219,10 @@ public class TermTest {
         assert Term.cursorReturnUp(9).equals(ESC + "[9F");
         assert Term.cursorUpAndScroll().equals(ESC + "M");
     }
+
+    @Test
+    public static void testScreenCommands() {
+        assert Term.saveScreen().equals(ESC + "[?47h");
+        assert Term.restoreScreen().equals(ESC + "[?47l");
+    }
 }
