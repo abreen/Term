@@ -221,6 +221,16 @@ public class TermTest {
     }
 
     @Test
+    public static void testEraseCommands() {
+        assert Term.eraseToEnd().equals(ESC + "[0J");
+        assert Term.eraseToBeginning().equals(ESC + "[1J");
+        assert Term.eraseScreen().equals(ESC + "[2J");
+        assert Term.eraseToEndOfLine().equals(ESC + "[0K");
+        assert Term.eraseToBeginningOfLine().equals(ESC + "[1K");
+        assert Term.eraseLine().equals(ESC + "[2K");
+    }
+
+    @Test
     public static void testScreenCommands() {
         assert Term.saveScreen().equals(ESC + "[?47h");
         assert Term.restoreScreen().equals(ESC + "[?47l");
