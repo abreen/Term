@@ -131,14 +131,18 @@ public class Term {
 
     public static String cursorHome() { return CSI + "H"; }
     public static String cursorTo(int line, int column) { return CSI + line + ";" + column + "H"; }
+    public static String cursorUp() { return CSI + "A"; }
     public static String cursorUp(int numLines) { return CSI + numLines + "A"; }
+    public static String cursorDown() { return CSI + "B"; }
     public static String cursorDown(int numLines) { return CSI + numLines + "B"; }
+    public static String cursorRight() { return CSI + "C"; }
     public static String cursorRight(int numColumns) { return CSI + numColumns + "C"; }
+    public static String cursorLeft() { return CSI + "D"; }
     public static String cursorLeft(int numColumns) { return CSI + numColumns + "D"; }
-    public static String cursorDownLines(int numLines) { return CSI + numLines + "E"; }
-    public static String cursorUpLines(int numLines) { return CSI + numLines + "F"; }
+    public static String cursorReturnDown(int numLines) { return CSI + numLines + "E"; }
+    public static String cursorReturnUp(int numLines) { return CSI + numLines + "F"; }
     public static String cursorToColumn(int column) { return CSI + column + "G"; }
-    public static String cursorScrollUp() { return ESC + "M"; }
+    public static String cursorUpAndScroll() { return ESC + "M"; }
     public static String cursorSave() { return ESC + 7; }
     public static String cursorRestore() { return ESC + 8; }
 

@@ -191,4 +191,32 @@ public class TermTest {
             ESC + "[22;23;39;49m"
         );
     }
+
+    @Test
+    public static void testCursorCommands() {
+        assert Term.cursorHome().equals(ESC + "[H");
+        assert Term.cursorTo(12, 9).equals(ESC + "[12;9H");
+        assert Term.cursorToColumn(3).equals(ESC + "[3G");
+        assert Term.cursorSave().equals(ESC + "7");
+        assert Term.cursorRestore().equals(ESC + "8");
+    }
+
+    @Test
+    public static void testCursorArrowKeys() {
+        assert Term.cursorUp().equals(ESC + "[A");
+        assert Term.cursorUp(3).equals(ESC + "[3A");
+        assert Term.cursorDown().equals(ESC + "[B");
+        assert Term.cursorDown(5).equals(ESC + "[5B");
+        assert Term.cursorRight().equals(ESC + "[C");
+        assert Term.cursorRight(2).equals(ESC + "[2C");
+        assert Term.cursorLeft().equals(ESC + "[D");
+        assert Term.cursorLeft(6).equals(ESC + "[6D");
+    }
+
+    @Test
+    public static void testCursorScrolls() {
+        assert Term.cursorReturnDown(3).equals(ESC + "[3E");
+        assert Term.cursorReturnUp(9).equals(ESC + "[9F");
+        assert Term.cursorUpAndScroll().equals(ESC + "M");
+    }
 }
