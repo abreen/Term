@@ -62,7 +62,7 @@ public class Term {
     }
 
     private static String esc(Stream<Integer> codes) {
-        return String.format("\u001b[%sm", codes.map(Objects::toString).collect(Collectors.joining(";")));
+        return CSI + codes.map(Objects::toString).collect(Collectors.joining(";")) + "m";
     }
 
     private static int getUnsetCode(Mode m) {
